@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+   ========================================================================== */
+@theme {
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Surfaces */
+  --color-ink: #0a0a0f;
+  --color-panel: #12121a;
+  --color-card: #1a1a28;
+  --color-raised: #22223a;
+  --color-line: #2a2a42;
+
+  /* Text */
+  --color-fg: #f0ede8;
+  --color-muted: #9b97b2;
+  --color-faint: #5c5878;
+
+  /* Brand */
+  --color-gold-50: #fefdf6;
+  --color-gold-100: #fdfbe7;
+  --color-gold-200: #faf3c3;
+  --color-gold-300: #f7eb9e;
+  --color-gold-400: #f5e37a;
+  --color-gold-500: #f5c842;
+  --color-gold-600: #c9a227;
+  --color-gold-700: #9e7e19;
+  --color-gold-800: #725b12;
+  --color-gold-900: #47390b;
+
+  /* Animations (these were referenced but never defined in the old code) */
+  --animate-slide-up: slide-up 0.35s ease-out both;
+  --animate-slide-left: slide-left 0.3s ease-out both;
+  --animate-fade-in: fade-in 0.2s ease-out both;
+  --animate-spin-slow: spin 6s linear infinite;
+  --animate-confetti: confetti-fall 3.5s linear forwards;
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slide-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes confetti-fall {
+    from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    to { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(245, 200, 66, 0.15); border-color: rgba(245, 200, 66, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(245, 200, 66, 0.35); border-color: rgba(245, 200, 66, 0.5); }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
+  ::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-gold-500); }
+}
+
+/* ==========================================================================
+   Reusable component classes
+   ========================================================================== */
+@layer components {
+  /* Surfaces */
+  .card { @apply bg-card border border-line rounded-xl; }
+  .card-hover { @apply transition-all hover:border-gold-500/30 hover:scale-[1.01]; }
+  .card-glow { animation: glow-pulse 2s infinite ease-in-out; }
+  .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/80 animate-fade-in;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Typography helpers */
+  .eyebrow { @apply text-[10px] font-mono uppercase tracking-wide text-faint; }
+  .section-title { @apply text-lg font-serif font-semibold text-fg border-b border-line pb-2; }
+
+  /* Form controls */
+  .field-label { @apply block text-[10px] font-mono uppercase text-muted mb-1.5; }
+  .input {
+    @apply w-full px-3 py-2.5 bg-panel border border-line rounded-lg text-sm text-fg
+           placeholder:text-faint focus:outline-none focus:border-gold-500 transition-colors;
+  }
+  textarea.input { @apply resize-none; }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold
+           transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-sm { @apply px-3 py-1.5; }
+  .btn-block { @apply w-full; }
+  .btn-primary { @apply bg-gold-500 text-black hover:bg-gold-600 enabled:hover:scale-[1.03] enabled:active:scale-95; }
+  .btn-secondary { @apply bg-raised border border-line text-fg hover:border-gold-500/60; }
+  .btn-outline { @apply bg-transparent border border-line text-muted hover:text-fg hover:border-muted; }
+  .btn-ghost { @apply bg-transparent text-muted hover:text-fg; }
+  .btn-success { @apply bg-emerald-500 text-black hover:bg-emerald-600; }
+  .btn-danger { @apply bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white; }
+
+  /* Badges & chips */
+  .badge { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono uppercase border; }
+  .badge-gold { @apply bg-gold-500/10 text-gold-500 border-gold-500/30; }
+  .badge-success { @apply bg-emerald-500/20 text-emerald-400 border-emerald-500/30; }
+  .badge-danger { @apply bg-red-500/20 text-red-400 border-red-500/30; }
+  .badge-muted { @apply bg-raised text-muted border-line; }
+  .chip { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border border-line bg-panel text-muted; }
+  .chip-active { @apply bg-gold-500 text-black border-gold-500 font-semibold; }
+}
